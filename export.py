@@ -86,6 +86,7 @@ def exportCollection(context: bpy.types.Context, filePath: str, settings: GAME_E
 	def getMeshMaterialsFbxOrder(mesh: bpy.types.Mesh) -> 'list[bpy.types.Material]':
 		materialIndexList = []
 		materialCount = len(mesh.materials)
+		if materialCount == 0: return []
 		for polygon in mesh.polygons:
 			if polygon.material_index in materialIndexList: continue
 			materialIndexList.append(polygon.material_index)
