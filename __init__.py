@@ -2,7 +2,7 @@ bl_info = {
 	'name': 'Game Export',
 	'description': 'Configure settings and export from Blender to Unity with one click.',
 	'author': 'codec-xyz',
-	'version': (2, 0, 1),
+	'version': (2, 0, 2),
 	'blender': (3, 4, 1),
 	'location': 'View3D',
 	'category': 'Import-Export',

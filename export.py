@@ -105,8 +105,8 @@ def exportCollection(context: bpy.types.Context, filePath: str, settings: GAME_E
 		elif light.type == 'SUN': type = UNITY_LIGHT_TYPE_DIRECTIONAL
 		elif light.type == 'SPOT':
 			type = UNITY_LIGHT_TYPE_SPOT
-			spotlightAngleDeg = light.spot_size
-			spotlightInnerAngleDeg = light.spot_size * (1 - light.spot_blend)
+			spotlightAngleDeg = light.spot_size * 57.295779513
+			spotlightInnerAngleDeg = light.spot_size * (1 - light.spot_blend) * 57.295779513
 		elif light.type == 'AREA' and light.shape == 'SQUARE':
 			type = UNITY_LIGHT_TYPE_AREA_RECTANGLE
 			areaSize = [light.size, light.size]
@@ -124,7 +124,7 @@ def exportCollection(context: bpy.types.Context, filePath: str, settings: GAME_E
 		if context.scene.render.engine == 'BLENDER_EEVEE':
 			if light.use_shadow: shadows = UNITY_LIGHT_SHADOWS_SOFT
 		elif context.scene.render.engine == 'CYCLES':
-			if light.cast_shadow: shadows = UNITY_LIGHT_SHADOWS_SOFT
+			if light.cycles.cast_shadow: shadows = UNITY_LIGHT_SHADOWS_SOFT
 
 		return makeLight(componentLink, gameObjectLink, type, UNITY_LIGHT_MODE_BAKED, shadows, color, inensity, spotlightAngleDeg, spotlightInnerAngleDeg, areaSize, 10)
 
@@ -231,7 +231,9 @@ def exportCollection(context: bpy.types.Context, filePath: str, settings: GAME_E
 
 		file = yamlJoin(file, makeGameObject(gameObjectLink, object.name, childComponentLinks, staticFlags))
 		transform = Transform().parentMatrix(transformMatrix)
-		if assetData: transform.rotation.rotate(assetData[3])
+		if assetData:
+			assetData[3].rotate(transform.rotation)
+			transform.rotation = assetData[3]
 		file = yamlJoin(file, makeTransfom(transformLink, gameObjectLink, parentTransformLink, childTransformLinks, transform))
 
 		return (transformLink, file)
